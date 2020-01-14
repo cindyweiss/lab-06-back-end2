@@ -21,3 +21,14 @@ Start time: __12:00___
 Finish time: __12:55___
 
 Actual time needed to complete: ___55min__
+
+
+Number and name of feature: _____________weather ___________________
+
+Estimate of time needed to complete: ___1hr__
+
+Start time: __12:57:00___
+
+Finish time: _____
+
+Actual time needed to complete: ___55min__

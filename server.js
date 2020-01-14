@@ -32,7 +32,26 @@ function Location(city, locationData) {
   this.latitude = locationData.lat;
   this.longitude = locationData.lon;
 
+});
+
+app.get('/weather', (request, response) => {
+  let city = request.query.city;
+  const geoWeather = require('./data/darksky.json');
+  let geoWeatherDailyData = geoWeather.daily.data;
+});
+
+
+function Weather(city, locationWeather) {
+  this.forecast = locationWeather.summery
+  this.time = locationWeather.time
 }
+
+
+
+
+
+
+
 
 //turning it on
 app.listen(PORT, () => {
