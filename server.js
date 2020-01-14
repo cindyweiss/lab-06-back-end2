@@ -50,7 +50,7 @@ app.get('/weather', (request, response) => {
 
 
 function Weather(city, locationWeather) {
-  this.forecast = locationWeather.summery;
+  this.forecast = locationWeather.summary;
   this.time = new Date(locationWeather.time);
 }
 
