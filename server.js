@@ -2,7 +2,7 @@
 
 const express = require('express');
 require('dotenv').config();
-
+const superagent = require('superagent');
 const cors = require('cors');
 
 
@@ -14,25 +14,31 @@ app.use(cors());
 
 
 //routes:
-
+let locations = {};
 
 //locations
 
 app.get('/location', (request, response) => {
-  try {
-    let city = request.query.city;
-    const geoData = require('./data/geo.json');
-    let geoDataResults = geoData[0];
+  // try {
+  let city = request.query.city;
+  let key = process.env.LOCATION_IQ_KEY;
+  const url = `https://us1.locationiq.com/v1/search.php?key=${key}&q=${city}&format=json&limit=1`;
 
-
-    let location = new Location(city, geoDataResults);
-
-    response.status(200).send(location);
+  if (locations[url]) {
+    response.send(locations[url]);
+  } else {
+    superagent.get(url)
+      .then(data => {
+        const geoData = data.body[0];
+        const location = new Location(city, geoData);
+        response.status(200).send(location);
+      })
+      .catch((error) => {
+        errorHandler('opps we made a boo boo', request, response);
+      });
   }
-  catch (error) {
-    errorHandler('opps we made a boo boo', request, response)
-  }
-});
+})
+
 
 function Location(city, locationData) {
   this.search_query = city;
@@ -41,16 +47,14 @@ function Location(city, locationData) {
   this.longitude = locationData.lon;
 }
 //weather
-const dailySummeries = [];
+//const dailySummeries = [];no longer need this.
 
 app.get('/weather', (request, response) => {
   try {
     let city = request.query.city;
     const geoWeather = require('./data/darksky.json');
-    geoWeather.daily.data.forEach(day => {
-      dailySummeries.push(new DailySummery(day));
-    });
-    response.status(200).send(dailySummeries);
+
+    response.status(200).send(geoWeather.daily.data.map(day => new DailySummery(day)));
   }
   catch (error) {
     errorHandler('opps we made a boo boo', request, response)
@@ -60,7 +64,6 @@ app.get('/weather', (request, response) => {
 function DailySummery(day) {
   this.forecast = day.summary;
   this.time = new Date(day.time * 1000).toString().slice(0, 15);
-  dailySummeries.push(this);
 }
 
 
