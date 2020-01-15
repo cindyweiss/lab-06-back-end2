@@ -29,6 +29,48 @@ Estimate of time needed to complete: ___1hr__
 
 Start time: __12:57:00___
 
-Finish time: _____
+Finish time: ___1:57__
 
 Actual time needed to complete: ___55min__
+
+
+Number and name of feature: ________data formatting________________________
+
+Estimate of time needed to complete: ___45 min__
+
+Start time: 12:01____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+Number and name of feature: ________________________________
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+
+Number and name of feature: ________________________________
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+Number and name of feature: ________________________________
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____

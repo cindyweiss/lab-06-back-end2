@@ -41,16 +41,14 @@ function Location(city, locationData) {
   this.longitude = locationData.lon;
 }
 //weather
-const dailySummeries = [];
+//const dailySummeries = [];
 
 app.get('/weather', (request, response) => {
   try {
     let city = request.query.city;
     const geoWeather = require('./data/darksky.json');
-    geoWeather.daily.data.forEach(day => {
-      dailySummeries.push(new DailySummery(day));
-    });
-    response.status(200).send(dailySummeries);
+
+    response.status(200).send(geoWeather.daily.data.map(day => new DailySummery(day)));
   }
   catch (error) {
     errorHandler('opps we made a boo boo', request, response)
@@ -60,7 +58,6 @@ app.get('/weather', (request, response) => {
 function DailySummery(day) {
   this.forecast = day.summary;
   this.time = new Date(day.time * 1000).toString().slice(0, 15);
-  dailySummeries.push(this);
 }
 
 
