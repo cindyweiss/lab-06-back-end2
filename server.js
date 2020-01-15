@@ -19,15 +19,20 @@ app.use(cors());
 //locations
 
 app.get('/location', (request, response) => {
-  let city = request.query.city;
-  const geoData = require('./data/geo.json');
-  let geoDataResults = geoData[0];
+  try {
+    let city = request.query.city;
+    const geoData = require('./data/geo.json');
+    let geoDataResults = geoData[0];
 
 
-  let location = new Location(city, geoDataResults);
+    let location = new Location(city, geoDataResults);
 
-  response.status(200).send(location);
-})
+    response.status(200).send(location);
+  }
+  catch (error) {
+    errorHandler('opps we made a boo boo', request, response)
+  }
+});
 
 function Location(city, locationData) {
   this.search_query = city;
@@ -37,16 +42,20 @@ function Location(city, locationData) {
 }
 //weather
 const dailySummeries = [];
+
 app.get('/weather', (request, response) => {
-  let city = request.query.city;
-  const geoWeather = require('./data/darksky.json');
-  geoWeather.daily.data.forEach(day => {
-    dailySummeries.push(new DailySummery(day));
-  });
-  response.status(200).send(dailySummeries);
-
+  try {
+    let city = request.query.city;
+    const geoWeather = require('./data/darksky.json');
+    geoWeather.daily.data.forEach(day => {
+      dailySummeries.push(new DailySummery(day));
+    });
+    response.status(200).send(dailySummeries);
+  }
+  catch (error) {
+    errorHandler('opps we made a boo boo', request, response)
+  }
 });
-
 
 function DailySummery(day) {
   this.forecast = day.summary;
@@ -56,9 +65,16 @@ function DailySummery(day) {
 
 
 
+function errorHandler(error, request, response) {
+  response.status(500).send(error);
+}
 
 
 
+
+app.get('*', (request, response) => {
+  response.status(404).send('this route does not exist');
+})
 
 
 
@@ -68,5 +84,3 @@ app.listen(PORT, () => {
 });
 
 app.use(cors());
-
-
