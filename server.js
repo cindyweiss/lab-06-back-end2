@@ -19,7 +19,7 @@ let locations = {};
 //locations
 
 app.get('/location', (request, response) => {
-  // try {
+
   let city = request.query.city;
   let key = process.env.LOCATION_IQ_KEY;
   const url = `https://us1.locationiq.com/v1/search.php?key=${key}&q=${city}&format=json&limit=1`;
@@ -31,13 +31,16 @@ app.get('/location', (request, response) => {
       .then(data => {
         const geoData = data.body[0];
         const location = new Location(city, geoData);
+        locations[url] = location;
         response.status(200).send(location);
       })
-      .catch((error) => {
-        errorHandler('opps we made a boo boo', request, response);
-      });
+      .catch(error => {
+        errorHandler('opps you broke it!', request, response);
+      })
+
   }
 })
+
 
 
 function Location(city, locationData) {
@@ -47,14 +50,24 @@ function Location(city, locationData) {
   this.longitude = locationData.lon;
 }
 //weather
-//const dailySummeries = [];no longer need this.
 
 app.get('/weather', (request, response) => {
   try {
-    let city = request.query.city;
-    const geoWeather = require('./data/darksky.json');
+    let { search_query, latitude, longitude } = request.query;
 
-    response.status(200).send(geoWeather.daily.data.map(day => new DailySummery(day)));
+    let key = process.env.DARK_SKY_API_KEY;
+
+    const url = `https://api.darksky.net/forecast/${key}/${latitude},${longitude}`;
+
+    superagent.get(url)
+      .then(superagentResults => {
+        // console.log(superagentResults)
+        const weatherArray = superagentResults.body.daily.data.map(day => {
+          console.log(day)
+          return new DailySummery(day);
+        })
+        response.status(200).send(weatherArray);
+      })
   }
   catch (error) {
     errorHandler('opps we made a boo boo', request, response)
@@ -65,6 +78,7 @@ function DailySummery(day) {
   this.forecast = day.summary;
   this.time = new Date(day.time * 1000).toString().slice(0, 15);
 }
+
 
 
 
