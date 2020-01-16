@@ -8,13 +8,13 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
 //the police
 app.use(cors());
 
 
 //routes:
 let locations = {};
+console.log(locations)
 
 //locations
 
@@ -63,7 +63,7 @@ app.get('/weather', (request, response) => {
       .then(superagentResults => {
         // console.log(superagentResults)
         const weatherArray = superagentResults.body.daily.data.map(day => {
-          console.log(day)
+          //console.log(day)
           return new DailySummery(day);
         })
         response.status(200).send(weatherArray);
@@ -80,10 +80,40 @@ function DailySummery(day) {
 }
 
 
+const eventHandler = (request, response) => {
+  //try {
+  let eventKey = process.env.EVENTFUL_API_KEY;
+  console.log(request.query);
+  let { search_query } = request.query
 
+  let url = `http://api.eventful.com/json/events/search?location=${search_query}&app_key=${eventKey}`;
+
+  console.log(url)
+
+  superagent.get(url)
+    .then(result => {
+      let parseData = JSON.parse(result.text)
+      let eventFul = parseData.events.event
+      // console.log('eventFul', eventFul);
+      let eventList = eventFul.map(value => {
+        // console.log('inside superagent map()')
+        return new Event(value)
+      })
+      console.log('eventList: ', eventList);
+      response.status(200).send(eventList)
+    }).catch((error) => console.log('this doesnt work here is why: ', error));
+}
+app.get('/events', eventHandler)
 
 function errorHandler(error, request, response) {
   response.status(500).send(error);
+}
+
+function Event(obj) {
+  this.link = obj.url;
+  this.name = obj.title;
+  this.event_date = obj.start_time;
+  this.summary = obj.description;
 }
 
 
@@ -96,8 +126,6 @@ app.get('*', (request, response) => {
 
 
 //turning it on
-app.listen(PORT, () => {
-  console.log(`listen on ${PORT}`);
-});
+app.listen(PORT, () => { console.log(`listen on ${PORT}`); });
 
-app.use(cors());
+
