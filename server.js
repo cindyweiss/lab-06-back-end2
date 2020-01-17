@@ -5,6 +5,7 @@ require('dotenv').config();
 const superagent = require('superagent');
 const cors = require('cors');
 
+const pg = require('pg');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -12,35 +13,60 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 
 
+//database conection setup
+const client = new pg.Client(process.env.DATABASE_URL);
+client.on('error', err => console.error(err));
+
+
+
 //routes:
 let locations = {};
-console.log(locations)
+//console.log(locations)
 
 //locations
 
 app.get('/location', (request, response) => {
 
   let city = request.query.city;
-  let key = process.env.LOCATION_IQ_KEY;
-  const url = `https://us1.locationiq.com/v1/search.php?key=${key}&q=${city}&format=json&limit=1`;
 
-  if (locations[url]) {
-    response.send(locations[url]);
-  } else {
-    superagent.get(url)
-      .then(data => {
-        const geoData = data.body[0];
-        const location = new Location(city, geoData);
-        locations[url] = location;
-        response.status(200).send(location);
-      })
-      .catch(error => {
-        errorHandler('opps you broke it!', request, response);
-      })
+  let sql1 = 'SELECT * FROM locations WHERE search_query=$1;';
+  let safeValues = [city];
 
-  }
+
+  client.query(sql1, safeValues)
+    .then(results => {
+      if (results.rowCount > 0) {
+        response.status(200).json(results.rows[0])
+      }
+
+
+      // if (locations[url]) {
+      //   response.send(locations[url]);
+      else {
+        let key = process.env.LOCATION_IQ_KEY;
+        const url = `https://us1.locationiq.com/v1/search.php?key=${key}&q=${city}&format=json&limit=1`;
+
+        superagent.get(url)
+          .then(data => {
+            const geoData = data.body[0];
+            const location = new Location(city, geoData);
+            // locations[url] = location;
+
+            let sql2 = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4);';
+
+            let safeValues = [location.search_query, location.formatted_query, location.latitude, location.longitude];
+
+            client.query(sql2, safeValues);
+
+            response.status(200).send(location);
+          })
+          .catch(error => {
+            errorHandler('opps you broke it!', request, response);
+          })
+
+      }
+    })
 })
-
 
 
 function Location(city, locationData) {
@@ -83,12 +109,12 @@ function DailySummery(day) {
 const eventHandler = (request, response) => {
   //try {
   let eventKey = process.env.EVENTFUL_API_KEY;
-  console.log(request.query);
+  //console.log(request.query);
   let { search_query } = request.query
 
   let url = `http://api.eventful.com/json/events/search?location=${search_query}&app_key=${eventKey}`;
 
-  console.log(url)
+  //console.log(url)
 
   superagent.get(url)
     .then(result => {
@@ -99,7 +125,7 @@ const eventHandler = (request, response) => {
         // console.log('inside superagent map()')
         return new Event(value)
       })
-      console.log('eventList: ', eventList);
+      //console.log('eventList: ', eventList);
       response.status(200).send(eventList)
     }).catch((error) => console.log('this doesnt work here is why: ', error));
 }
@@ -110,9 +136,9 @@ function errorHandler(error, request, response) {
 }
 
 function Event(obj) {
-  this.link = obj.url;
   this.name = obj.title;
   this.event_date = obj.start_time;
+  this.link = obj.url;
   this.summary = obj.description;
 }
 
@@ -123,9 +149,19 @@ app.get('*', (request, response) => {
   response.status(404).send('this route does not exist');
 })
 
+//conect to database and start the web server
 
+client.connect()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log('Server up on', PORT);
+    });
+  })
+  .catch(error => {
+    throw `PG Startup Error: ${error.message}`;
+  });
 
 //turning it on
-app.listen(PORT, () => { console.log(`listen on ${PORT}`); });
+//app.listen(PORT, () => { console.log(`listen on ${PORT}`); });
 
 
