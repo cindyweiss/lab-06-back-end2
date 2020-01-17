@@ -105,6 +105,7 @@ function DailySummery(day) {
   this.time = new Date(day.time * 1000).toString().slice(0, 15);
 }
 
+//EVENT
 
 const eventHandler = (request, response) => {
   //try {
@@ -142,7 +143,18 @@ function Event(obj) {
   this.summary = obj.description;
 }
 
+//movies
 
+app.get('/movies', (request, response) => {
+  // try {
+  // let { }
+
+
+  const url = `https://api.themoviedb.org/3/search/multi?api_key=${process.env.MOVIE_API_KEY}&language=en-US&query=${request.query.search_query}&page=1&include_adult=false&region=US`;
+
+
+  //console.log();
+})
 
 
 app.get('*', (request, response) => {
