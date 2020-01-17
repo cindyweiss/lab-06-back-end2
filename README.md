@@ -34,7 +34,7 @@ Finish time: ___1:57__
 Actual time needed to complete: ___55min__
 
 
-Number and name of feature: ________data formatting________________________
+Number and name of feature: ________data formatting_______________________
 
 Estimate of time needed to complete: ___45 min__
 
@@ -44,33 +44,38 @@ Finish time: _____
 
 Actual time needed to complete: _____
 
-Number and name of feature: ________________________________
-
-Estimate of time needed to complete: _____
-
-Start time: _____
-
-Finish time: _____
-
-Actual time needed to complete: _____
 
 
-Number and name of feature: ________________________________
 
-Estimate of time needed to complete: _____
+Rhen Zabel contributed with tutoring to this part of the assignment.
 
-Start time: _____
+Number and name of feature: _______database set up_________________________
 
-Finish time: _____
+Estimate of time needed to complete: ___1hr__
 
-Actual time needed to complete: _____
+Start time: _6:00____
 
-Number and name of feature: ________________________________
+Finish time: __6:40___
 
-Estimate of time needed to complete: _____
+Actual time needed to complete: __40min___
 
-Start time: _____
 
-Finish time: _____
+Number and name of feature: ____________function checking database____________________
 
-Actual time needed to complete: _____
+Estimate of time needed to complete: ____1 hr_
+
+Start time: __6:50___
+
+Finish time: _7:20____
+
+Actual time needed to complete: ___30min__
+
+Number and name of feature: _____adding postgres___________________________
+
+Estimate of time needed to complete: ___30min__
+
+Start time: _7:30____
+
+Finish time: __8:00___
+
+Actual time needed to complete: _30min____
