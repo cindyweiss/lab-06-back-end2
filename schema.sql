@@ -13,7 +13,7 @@ CREATE TABLE locations (
 
 
 
-
+heroku pg:psql -f schema.sql --app cindyscityexplorer
 
 
 

@@ -79,3 +79,14 @@ Start time: _7:30____
 Finish time: __8:00___
 
 Actual time needed to complete: _30min____
+
+
+Number and name of feature: ________________________________
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
