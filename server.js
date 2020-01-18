@@ -145,17 +145,22 @@ function Event(obj) {
 
 //movies
 
-app.get('/movies', (request, response) => {
+const movieHandler = ('/movies', (request, response) => {
   // try {
-  // let { }
+  let city = request.query.search_query;
+  let movieKey = process.env.MOVIE_API_KEY;
+
+  const movieUrl = `https://api.themoviedb.org/3/search/multi?api_key=${movieKey}&language=en-US&query=${city}&page=1&include_adult=false&region=US`;
+
+  superagent.get(movieUrl)
+    .then(superagentResults => {
+      console.log(superagentResults.text);
 
 
-  const url = `https://api.themoviedb.org/3/search/multi?api_key=${process.env.MOVIE_API_KEY}&language=en-US&query=${request.query.search_query}&page=1&include_adult=false&region=US`;
-
-
-  //console.log();
+    })
 })
 
+app.get('/movies', movieHandler)
 
 app.get('*', (request, response) => {
   response.status(404).send('this route does not exist');
