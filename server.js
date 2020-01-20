@@ -154,11 +154,23 @@ const movieHandler = ('/movies', (request, response) => {
 
   superagent.get(movieUrl)
     .then(superagentResults => {
-      console.log(superagentResults.text);
-
-
+      //console.log(superagentResults.body);
+      let totalMovieData = superagentResults.body.results.map(val => {
+        return new Movie(val);
+      });
+      response.status(200).send(totalMovieData);
     })
-})
+    .catch((error) => console.log('this doesnt work here is why: ', error));
+});
+
+function Movie(superagentResults) {
+  this.title = superagentResults.title;
+  this.overview = superagentResults.overview;
+  this.average_votes = superagentResults.vote_average;
+  this.total_votes = superagentResults.vote_count;
+  this.image_url = `https://image.tmdb.org/t/p/w500${superagentResults.poster_path}`this.popularity = superagentResults.popularity;
+  this.released_on = superagentResults.release_date;
+}
 
 app.get('/movies', movieHandler)
 
