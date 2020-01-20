@@ -146,7 +146,7 @@ function Event(obj) {
 //movies
 
 const movieHandler = ('/movies', (request, response) => {
-  // try {
+
   let city = request.query.search_query;
   let movieKey = process.env.MOVIE_API_KEY;
 
@@ -163,6 +163,8 @@ const movieHandler = ('/movies', (request, response) => {
     .catch((error) => console.log('this doesnt work here is why: ', error));
 });
 
+app.get('/movies', movieHandler)
+
 function Movie(superagentResults) {
   this.title = superagentResults.title;
   this.overview = superagentResults.overview;
@@ -173,7 +175,43 @@ function Movie(superagentResults) {
   this.released_on = superagentResults.release_date;
 }
 
-app.get('/movies', movieHandler)
+//yelp query starts here//
+
+
+const yelpHandler = ('/yelp', (request, response) => {
+
+  let area = request.query.search_query;
+
+  let yelpKey = process.env.YELP_API_KEY;
+
+  const yelpUrl = `https://api.yelp.com/v3/businesses/search?catagory=restaurants&location=${area}`;
+
+  superagent.get(yelpUrl)
+    .set('Authorization', `Bearer ${yelpKey}`)
+    .then(yelpResults => {
+      // console.log(yelpResults)
+      let totalYelpData = JSON.parse(yelpResults.text);
+      let eachYelpData = totalYelpData.businesses.map(val => {
+        return new Yelp(val);
+      })
+      response.status(200).send(eachYelpData);
+    })
+    .catch((error) => console.log('this doesnt work here is why: ', error));
+})
+
+app.get('/yelp', yelpHandler)
+
+function Yelp(yelpResults) {
+  this.name = yelpResults.name;
+  this.image_url = yelpResults.image_url;
+  this.price = yelpResults.price;
+  this.rating = yelpResults.rating;
+  this.url = yelpResults.url;
+}
+
+
+
+
 
 app.get('*', (request, response) => {
   response.status(404).send('this route does not exist');
