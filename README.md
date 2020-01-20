@@ -81,12 +81,12 @@ Finish time: __8:00___
 Actual time needed to complete: _30min____
 
 
-Number and name of feature: ________________________________
+Number and name of feature: ________________movie database________________
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: _1hr____
 
-Start time: _____
+Start time: ____8:30_
 
-Finish time: _____
+Finish time: ____9:40_
 
-Actual time needed to complete: _____
+Actual time needed to complete: ____1.10hr_
