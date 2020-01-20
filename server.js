@@ -168,7 +168,8 @@ function Movie(superagentResults) {
   this.overview = superagentResults.overview;
   this.average_votes = superagentResults.vote_average;
   this.total_votes = superagentResults.vote_count;
-  this.image_url = `https://image.tmdb.org/t/p/w500${superagentResults.poster_path}`this.popularity = superagentResults.popularity;
+  this.image_url = `https://image.tmdb.org/t/p/w500${superagentResults.poster_path}`;
+  this.popularity = superagentResults.popularity;
   this.released_on = superagentResults.release_date;
 }
 
